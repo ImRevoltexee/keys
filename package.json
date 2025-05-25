@@ -4,5 +4,8 @@
   "scripts": {
     "vercel-build": "echo \"No build step required\""
   },
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@upstash/redis": "^1.34.9"
+  }
 }
