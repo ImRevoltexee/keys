@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Your Key</title>
+</head>
+<body style="text-align:center; padding:40px; font-family:sans-serif;">
+  <h1>🎉 Your Key</h1>
+  <p id="keyBox" style="font-size: 24px; font-weight: bold;"></p>
+  <p>Paste this key into your Roblox script executor.</p>
+
+  <script>
+  const params = new URLSearchParams(window.location.search);
+  const key = params.get("key");
+
+  if (key) {
+    document.getElementById("keyBox").textContent = key;
+  } else {
+    document.getElementById("keyBox").textContent = "❌ No key found in URL.";
+  }
+</script>
+</body>
+</html>

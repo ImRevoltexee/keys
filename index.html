@@ -1,20 +1,29 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Get Your Key</title>
-  </head>
-  <body style="text-align:center; padding:40px; font-family:sans-serif;">
-    <h1>Roblox Script Key Generator</h1>
-    <p>Click the button to complete a checkpoint and receive your unique key.</p>
-    <a id="getKey" href="#">
-      <button style="padding: 15px 30px; font-size: 20px;">Get Key</button>
-    </a>
-    <script>
-      const uid = "user_" + Math.floor(Math.random() * 100000);
-      const target = `https://your-vercel-url.vercel.app/api/generate-key?uid=${uid}`;
-      const linkvertise = `https://link-hub.net/YOUR_LINK_ID?target=${encodeURIComponent(target)}`;
+<head>
+  <title>Get Your Key</title>
+</head>
+<body style="text-align:center; padding:40px; font-family:sans-serif;">
+  <h1>Roblox Script Key Generator</h1>
+  <p>Click the button below, complete the checkpoint, and receive your unique key.</p>
 
-      document.getElementById("getKey").href = linkvertise;
-    </script>
-  </body>
+  <!-- Get Key button -->
+  <a id="getKey" href="#">
+    <button style="padding: 15px 30px; font-size: 20px;">Get Key</button>
+  </a>
+
+  <script>
+  // Generate a unique user ID
+  const uid = "user_" + Math.floor(Math.random() * 100000);
+
+  // Your backend API that will generate the key
+  const keyGenUrl = `https://your-vercel-project.vercel.app/api/generate-key?uid=${uid}`;
+
+  // Boost.ink link + dynamic target (this will redirect user to keyGenUrl after tasks)
+  const boostUrl = `https://boost.ink/aa1f41?target=${encodeURIComponent(keyGenUrl)}`;
+
+  // Set the Get Key button link
+  document.getElementById("getKey").href = boostUrl;
+</script>
+</body>
 </html>
