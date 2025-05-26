@@ -1,15 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Get Your Key</title>
-</head>
-<body style="text-align:center; padding:40px; font-family:sans-serif;">
-  <h1>Roblox Script Key Generator</h1>
-  <p>Click the button below, complete the checkpoint, and receive your unique key.</p>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
 
-  <a id="getKey" href="#">
-    <button style="padding: 15px 30px; font-size: 20px;">Get Key</button>
-  </a>
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-width: 450px;
+      width: 100%;
+    }
+
+    h1 {
+      font-weight: 700;
+      margin-bottom: 25px;
+      font-size: 2.5rem;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 35px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    a#getKey {
+      text-decoration: none;
+    }
+
+    button {
+      background: #ffd700;
+      color: #333;
+      border: none;
+      border-radius: 8px;
+      padding: 15px 40px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
+      transition: background 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background: #ffea33;
+      transform: scale(1.05);
+    }
+
+    button:active {
+      transform: scale(0.95);
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      button {
+        width: 100%;
+        padding: 15px 0;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Roblox Script Key Generator</h1>
+    <p>Click the button below, complete the checkpoint, and receive your unique key.</p>
+
+    <a id="getKey" href="#">
+      <button>Get Key</button>
+    </a>
+  </div>
 
   <script>
     const uid = "user_" + Math.floor(Math.random() * 100000);
