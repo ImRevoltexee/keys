@@ -43,6 +43,7 @@
     #keyBox {
       background: rgba(255,255,255,0.2);
       padding: 15px 20px;
+      padding-right: 60px; /* Added: space so button won't overlap */
       border-radius: 8px;
       font-size: 1.3rem;
       letter-spacing: 0.1em;
@@ -78,6 +79,12 @@
 
     #copyBtn:active {
       background: rgba(255, 255, 255, 0.8);
+    }
+
+    /* New flash class for green background on click */
+    #copyBtn.flash {
+      background-color: #28a745 !important;
+      transition: background-color 0.3s ease;
     }
 
     #copyBtn svg {
@@ -149,13 +156,11 @@
       const copyBtn = document.getElementById("copyBtn");
       copyBtn.addEventListener("click", () => {
         navigator.clipboard.writeText(key).then(() => {
-          const originalText = copyBtn.innerHTML;
-          copyBtn.textContent = "Copied!";
-          copyBtn.style.color = "#ffd700";
+          // Flash green background instead of changing text
+          copyBtn.classList.add("flash");
           setTimeout(() => {
-            copyBtn.innerHTML = originalText;
-            copyBtn.style.color = "";
-          }, 1500);
+            copyBtn.classList.remove("flash");
+          }, 500);
         }).catch(() => {
           alert("Failed to copy key. Please copy manually.");
         });
