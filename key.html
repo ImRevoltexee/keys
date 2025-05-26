@@ -30,6 +30,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       max-width: 400px;
       width: 100%;
+      position: relative;
     }
 
     h1 {
@@ -50,6 +51,39 @@
       margin-bottom: 15px;
       box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
       word-break: break-word;
+      position: relative;
+    }
+
+    /* Copy button */
+    #copyBtn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+    }
+
+    #copyBtn:hover {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    #copyBtn:active {
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    #copyBtn svg {
+      fill: #333;
+      width: 20px;
+      height: 20px;
     }
 
     p {
@@ -85,7 +119,14 @@
 <body>
   <div class="container">
     <h1>🎉 Your Key</h1>
-    <p id="keyBox">Loading...</p>
+    <div id="keyBoxWrapper" style="position: relative;">
+      <p id="keyBox">Loading...</p>
+      <button id="copyBtn" aria-label="Copy Key">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+        </svg>
+      </button>
+    </div>
     <p>Paste this key into your Roblox script executor.</p>
     <p id="cooldownInfo">Loading cooldown...</p>
   </div>
@@ -103,6 +144,22 @@
 
     if (key) {
       document.getElementById("keyBox").textContent = key;
+
+      // Copy button logic
+      const copyBtn = document.getElementById("copyBtn");
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(key).then(() => {
+          const originalText = copyBtn.innerHTML;
+          copyBtn.textContent = "Copied!";
+          copyBtn.style.color = "#ffd700";
+          setTimeout(() => {
+            copyBtn.innerHTML = originalText;
+            copyBtn.style.color = "";
+          }, 1500);
+        }).catch(() => {
+          alert("Failed to copy key. Please copy manually.");
+        });
+      });
 
       fetch(`/api/check-key?key=${encodeURIComponent(key)}`)
         .then(res => res.json())
@@ -133,6 +190,7 @@
     } else {
       document.getElementById("keyBox").textContent = "❌ No key found in URL.";
       document.getElementById("cooldownInfo").textContent = "";
+      document.getElementById("copyBtn").style.display = "none";
     }
   </script>
 </body>
