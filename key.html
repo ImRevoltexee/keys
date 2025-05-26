@@ -7,16 +7,53 @@
   <h1>🎉 Your Key</h1>
   <p id="keyBox" style="font-size: 24px; font-weight: bold;"></p>
   <p>Paste this key into your Roblox script executor.</p>
+  <p id="cooldownInfo" style="font-size: 18px; margin-top: 10px;">Loading cooldown...</p>
 
   <script>
-  const params = new URLSearchParams(window.location.search);
-  const key = params.get("key");
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get("key");
 
-  if (key) {
-    document.getElementById("keyBox").textContent = key;
-  } else {
-    document.getElementById("keyBox").textContent = "❌ No key found in URL.";
-  }
-</script>
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      return `${h}h ${m}m ${s}s`;
+    }
+
+    if (key) {
+      document.getElementById("keyBox").textContent = key;
+
+      fetch(`/api/check-key?key=${encodeURIComponent(key)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.cooldownSecondsLeft !== undefined) {
+            let secondsLeft = data.cooldownSecondsLeft;
+
+            const cooldownEl = document.getElementById("cooldownInfo");
+
+            function updateTimer() {
+              if (secondsLeft > 0) {
+                cooldownEl.textContent = `Cooldown time left: ${formatTime(secondsLeft)}`;
+                secondsLeft--;
+              } else {
+                cooldownEl.textContent = "Cooldown expired. You can generate a new key.";
+              }
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+
+          } else {
+            document.getElementById("cooldownInfo").textContent = "No cooldown info available.";
+          }
+        })
+        .catch(() => {
+          document.getElementById("cooldownInfo").textContent = "Failed to load cooldown info.";
+        });
+    } else {
+      document.getElementById("keyBox").textContent = "❌ No key found in URL.";
+      document.getElementById("cooldownInfo").textContent = "";
+    }
+  </script>
 </body>
 </html>
