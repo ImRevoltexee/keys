@@ -8,17 +8,24 @@ const redis = new Redis({
 export default async function handler(req, res) {
   try {
     const key = req.query.key;
-
     if (!key) return res.status(400).json({ error: "Missing key" });
 
     const ip = await redis.get(`ip:${key}`);
 
     if (!ip) {
+      // Check if it's a lifetime key
+      const isLifetime = await redis.get(`lifetime:${key}`);
+      if (isLifetime) {
+        return res.status(200).json({
+          key,
+          cooldownSecondsLeft: -1, // signify no cooldown
+          lifetime: true,
+        });
+      }
       return res.status(404).json({ error: "Key not found or expired" });
     }
 
     const ttl = await redis.ttl(`key:${ip}`);
-
     if (ttl <= 0) {
       return res.status(404).json({ error: "Cooldown expired" });
     }
@@ -32,3 +39,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
