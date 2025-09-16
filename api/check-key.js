@@ -13,12 +13,11 @@ export default async function handler(req, res) {
     const ip = await redis.get(`ip:${key}`);
 
     if (!ip) {
-      // Check if it's a lifetime key
       const isLifetime = await redis.get(`lifetime:${key}`);
       if (isLifetime) {
         return res.status(200).json({
           key,
-          cooldownSecondsLeft: -1, // signify no cooldown
+          cooldownSecondsLeft: -1, // no cooldown
           lifetime: true,
         });
       }
@@ -39,4 +38,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
-
