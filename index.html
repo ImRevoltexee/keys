@@ -3,98 +3,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Get Your Key</title>
+  <title>Your Key</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #667eea, #764ba2);
-      color: white;
+      color: #fff;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
       padding: 20px;
       text-align: center;
     }
-
     .container {
       background: rgba(255, 255, 255, 0.1);
       padding: 40px 30px;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      max-width: 450px;
+      max-width: 400px;
       width: 100%;
+      position: relative;
     }
-
     h1 {
       font-weight: 700;
-      margin-bottom: 25px;
-      font-size: 2.5rem;
+      margin-bottom: 20px;
+      font-size: 2.2rem;
       text-shadow: 0 2px 5px rgba(0,0,0,0.3);
     }
-
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 35px;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-    }
-
-    a#getKey {
-      text-decoration: none;
-    }
-
-    button {
-      background: #ffd700;
-      color: #333;
-      border: none;
+    #keyBox {
+      background: rgba(255,255,255,0.2);
+      padding: 15px 20px;
+      padding-right: 60px;
       border-radius: 8px;
-      padding: 15px 40px;
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.3rem;
+      font-weight: 600;
+      user-select: all;
+      margin-bottom: 15px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+      word-break: break-word;
+      position: relative;
+    }
+    #copyBtn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.3);
+      border: none;
+      border-radius: 6px;
+      padding: 6px;
       cursor: pointer;
-      box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5);
-      transition: background 0.3s ease, transform 0.2s ease;
-      user-select: none;
+      transition: background 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
     }
-
-    button:hover {
-      background: #ffea33;
-      transform: scale(1.05);
-    }
-
-    button:active {
-      transform: scale(0.95);
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 2rem;
-      }
-      button {
-        width: 100%;
-        padding: 15px 0;
-        font-size: 1.1rem;
-      }
+    #copyBtn:hover { background: rgba(255, 255, 255, 0.6); }
+    #copyBtn.flash { background-color: #28a745 !important; }
+    #copyBtn svg { fill: #333; width: 20px; height: 20px; }
+    #cooldownInfo {
+      font-weight: 500;
+      margin-top: 15px;
+      font-size: 1.1rem;
+      color: #ffd700;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Key Generator</h1>
-    <p>Click the button below, complete the checkpoint, and receive your unique key.</p>
-
-    <a id="getKey" href="#">
-      <button>Get Key</button>
-    </a>
+    <h1>🎉 Your Key</h1>
+    <div id="keyBoxWrapper" style="position: relative;">
+      <p id="keyBox">Loading...</p>
+      <button id="copyBtn" aria-label="Copy Key">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+        </svg>
+      </button>
+    </div>
+    <p>Paste this key into your Roblox script executor.</p>
+    <p id="cooldownInfo">Loading cooldown...</p>
   </div>
 
   <script>
-    const uid = "user_" + Math.floor(Math.random() * 100000);
-    const keyGenUrl = `https://roblox-key-system-hapg.vercel.app/api/generate-key?uid=${uid}`;
-    const boostUrl = `https://boost.ink/aa1f41?target=${encodeURIComponent(keyGenUrl)}`;
-    document.getElementById("getKey").href = boostUrl;
+    const params = new URLSearchParams(window.location.search);
+    const key = params.get("key");
+
+    function formatTime(seconds) {
+      const h = Math.floor(seconds / 3600);
+      const m = Math.floor((seconds % 3600) / 60);
+      const s = seconds % 60;
+      return `${h}h ${m}m ${s}s`;
+    }
+
+    if (key) {
+      document.getElementById("keyBox").textContent = key;
+
+      // Copy logic
+      const copyBtn = document.getElementById("copyBtn");
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(key).then(() => {
+          copyBtn.classList.add("flash");
+          setTimeout(() => copyBtn.classList.remove("flash"), 500);
+        }).catch(() => {
+          alert("Failed to copy key. Please copy manually.");
+        });
+      });
+
+      // Fetch cooldown info
+      fetch(`/api/check-key?key=${encodeURIComponent(key)}`)
+        .then(res => res.json())
+        .then(data => {
+          const cooldownEl = document.getElementById("cooldownInfo");
+
+          if (data.cooldownSecondsLeft !== undefined) {
+            let secondsLeft = data.cooldownSecondsLeft;
+
+            function updateTimer() {
+              if (secondsLeft > 0 || secondsLeft === -1) {
+                cooldownEl.textContent =
+                  secondsLeft === -1
+                    ? "Lifetime key (no cooldown)."
+                    : `Cooldown time left: ${formatTime(secondsLeft)}`;
+                if (secondsLeft > 0) secondsLeft--;
+              } else {
+                cooldownEl.textContent = "Cooldown expired. You can generate a new key.";
+              }
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+          } else {
+            cooldownEl.textContent = "No cooldown info available.";
+          }
+        })
+        .catch(() => {
+          document.getElementById("cooldownInfo").textContent = "Failed to load cooldown info.";
+        });
+
+    } else {
+      document.getElementById("keyBox").textContent = "❌ No key found in URL.";
+      document.getElementById("cooldownInfo").textContent = "";
+      document.getElementById("copyBtn").style.display = "none";
+    }
   </script>
 </body>
 </html>
